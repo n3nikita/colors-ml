@@ -1,7 +1,7 @@
 import './App.css';
 
 function App({colorBack, textColor, clicked }) {
-  const onClicked = () => clicked(colorBack, textColor);
+  const onClicked = () => clicked(textColor, colorBack);
 
   return (
     <div className='container-box' onClick={onClicked}>
