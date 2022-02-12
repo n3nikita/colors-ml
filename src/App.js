@@ -1,13 +1,13 @@
 import './App.css';
 
-function App(props) {
+function App({colorBack, textColor, clicked }) {
+  const onClicked = () => clicked(colorBack, textColor);
 
   return (
-    <div className='container-box'>
-      <div className='back' style={{ background: props.colorBack, color: props.textColor }}>
+    <div className='container-box' onClick={onClicked}>
+      <div className='back' style={{ background: colorBack, color: textColor }}>
         <p className='text'>Hello World</p>
       </div>
-      <button className='btn btn-blue'>Choose</button>
     </div>
   );
 }
