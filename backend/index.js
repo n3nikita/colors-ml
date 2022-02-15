@@ -13,7 +13,8 @@ app.post('/train', async (req, res) => {
     return res.sendStatus(400);
   }
   
-  // TODO: add logic
+  model = new Model();
+  await model.train(req.body);
   res.sendStatus(200);
 });
 
@@ -23,7 +24,14 @@ app.post('/predict', (req, res) => {
   }
 
   const { color } = req.body;
-  // TODO: add logic
+  model.predict(color)
+        .then((prediction) => {
+          res.send(JSON.stringify(prediction));
+        })
+        .catch((err) => {
+          console.log(err);
+          res.sendStatus(500);
+        });
 
 });
 

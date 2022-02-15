@@ -1,39 +1,36 @@
 import * as tf from '@tensorflow/tfjs-node';
 
-const model = tf.sequential();
-model.add(tf.layers.dense({ units: 1, inputShape: [3] }));
-model.compile({
-  loss: 'meanSquaredError',
-  optimizer: 'sgd',
-  metrics: ['MAE']
-});
+export default class Model {
+  constructor() {
+    const model = tf.sequential();
+    model.add(tf.layers.dense({ units: 3, inputShape: [3] }));
+    model.add(tf.layers.dense({ units: 2, activation: 'softmax' }));
+    model.compile({
+      optimizer: tf.train.adam(),
+      loss: 'sparseCategoricalCrossentropy',
+      metrics: ['accuracy'],
+    });
 
+    this._model = model;
+  }
 
-// Generate some random fake data for demo purpose.
-// const xs = tf.randomUniform([10000, 3]);
-// const ys = tf.randomUniform([10000, 1]);
-// const valXs = tf.randomUniform([1000, 3]);
-// const valYs = tf.randomUniform([1000, 1]);
+  async train(data, options = {}) {
+    const {
+      epochs = 100,
+      batchSize = 16,
+      callbackFolder = 'tmp',
+    } = options;
+    const normalisedData = data.map((e) =>
+      e.color.map((c) => this._normalize(c)),
+    );
+    let trainData = tf.tensor(normalisedData);
+    let trainLabels = tf.tensor(data.map((e) => e.type));
 
-
-// Start model training process.
-
-async function train(data) {
-  console.log(data);
-  let xs = tf.tensor(data.map(e => e.color));
-  let ys = tf.tensor(data.map(e => e.type));
-  console.log(xs);
-  console.log(ys);
-
-  await model.fit(xs, ys, {
-    epochs: 100,
-    validationData: [xs, ys],
-    // Add the tensorBoard callback here.
-    callbacks: tf.node.tensorBoard('./tmp')
-  });
-
-
-  console.log(model.predict([[255,255,255]]))
+    return await this._model.fit(trainData, trainLabels, {
+      epochs,
+      batchSize,
+      validationData: [trainData, trainLabels],
+      callbacks: tf.node.tensorBoard(`./model-data/${callbackFolder}`),
+    });
+  }
 }
-// train();
-export default train;
