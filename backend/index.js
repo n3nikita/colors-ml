@@ -8,9 +8,23 @@ const app = express();
 app.use(bodyParser());
 app.use(cors());  
 
-app.post('/', (req, res) => {
-  train(req.body);
-  res.send(200);
+app.post('/train', async (req, res) => {
+  if (!req.body && !req.body.length) {
+    return res.sendStatus(400);
+  }
+  
+  // TODO: add logic
+  res.sendStatus(200);
+});
+
+app.post('/predict', (req, res) => {
+  if (!model && !req.body) {
+    return res.sendStatus(400);
+  }
+
+  const { color } = req.body;
+  // TODO: add logic
+
 });
 
 app.listen(3001, () => console.log('runnig'));
