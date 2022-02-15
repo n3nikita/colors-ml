@@ -33,4 +33,20 @@ export default class Model {
       callbacks: tf.node.tensorBoard(`./model-data/${callbackFolder}`),
     });
   }
+
+  async predict(backgroundColor) {
+    const normalizedColor = backgroundColor.map((c) => this._normalize(c));
+    const prediction = this._model.predict(
+      tf.tensor(normalizedColor, [1, normalizedColor.length]),
+    );
+
+    return prediction.dataSync();
+  }
+
+  _normalize(value, min = 0, max = 255) {
+    if (min === undefined || max === undefined) {
+      return value;
+    }
+    return (value - min) / (max - min);
+  }
 }
