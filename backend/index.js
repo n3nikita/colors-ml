@@ -1,19 +1,18 @@
 import express from "express";
-import bodyParser  from 'body-parser';
 import cors  from 'cors';
-
-import train from './model.js';
+import Model from './model.js';
 
 const app = express();
-app.use(bodyParser());
+app.use(express.json());
 app.use(cors());  
+
+const model = new Model();
 
 app.post('/train', async (req, res) => {
   if (!req.body && !req.body.length) {
     return res.sendStatus(400);
   }
   
-  model = new Model();
   await model.train(req.body);
   res.sendStatus(200);
 });

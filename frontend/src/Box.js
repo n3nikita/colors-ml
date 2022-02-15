@@ -1,6 +1,4 @@
-import './App.css';
-
-function App({colorBack, textColor, clicked }) {
+function Box({colorBack, textColor, clicked }) {
   const onClicked = () => clicked(textColor, colorBack);
 
   return (
@@ -12,4 +10,4 @@ function App({colorBack, textColor, clicked }) {
   );
 }
 
-export default App;
+export default Box;
