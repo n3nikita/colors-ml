@@ -39,7 +39,7 @@ code {
 
 .button-container {
   margin-bottom: 10px;
-  width: 230px;
+  width: 255px;
   display: flex;
   justify-content: space-between;
 }

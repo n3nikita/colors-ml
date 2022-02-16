@@ -103,6 +103,7 @@ function Field() {
           onClick={predict} 
           startIcon={<TrackChangesIcon />} 
           disabled={prediction != PREDICTION.NONE}
+          size='large'
         >
           Predict
         </Button>
@@ -110,6 +111,7 @@ function Field() {
           variant="outlined" 
           onClick={next} 
           endIcon={<ArrowForwardIosIcon />}
+          size='large'
         >
           Next
         </Button>
@@ -121,6 +123,7 @@ function Field() {
         loading={training}
         loadingPosition="start"
         variant="outlined"
+        size='large'
       >
         Train model
       </LoadingButton>
