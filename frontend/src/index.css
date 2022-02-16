@@ -25,6 +25,7 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 50px 0 20px 0;
 }
 
 .container-box {
@@ -32,8 +33,15 @@ code {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 20px;
+  margin: 0 20px;
   cursor: pointer;
+}
+
+.button-container {
+  margin-bottom: 10px;
+  width: 230px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .back {
@@ -45,4 +53,24 @@ code {
   font-size: 40px;
   font-weight: bold;
   border-radius: 10px;
+}
+
+.predicted {
+  box-shadow: rgba(75, 245, 159, 1) 0px 5px 15px;
+  border-radius: 10px;
+  outline-style: solid;
+  outline-width: 5px;
+  outline-color: rgba(75, 245, 159, 1);
+}
+
+.percent {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  font-size: 25px;
+  color: rgb(104, 104, 104);
+  margin: 10px 0 0 0;
 }

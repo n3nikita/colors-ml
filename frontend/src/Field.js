@@ -3,21 +3,30 @@ import { useState } from 'react';
 import React  from 'react';
 import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
-import BlurOnIcon from '@mui/icons-material/BlurOn';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { getRandomColor, hexToRgb } from './utils/colors'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+export const PREDICTION = {
+  BLACK: 'black',
+  WHITE: 'white',
+  NONE: 'none'
+}
+
 function Field() {
   const [data, setData] = useState([]);
   const [colorBack, setColorBack] = useState(getRandomColor);
-  const [predictedColor, setPredictedColor] = useState('none');
+  const [prediction, setPrediction] = useState(PREDICTION.NONE);
   const [training, setTraining] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [percent, setPercent] = useState(0);
   
   const refreshAndSave = (type, color) => {
     data.push({ type: type === 'white' ? 1 : 0, color: hexToRgb(color) });
@@ -34,14 +43,17 @@ function Field() {
     })
       .then((res) => res.json())
       .then((body) => {
-        console.log(body);
-        setPredictedColor(body[0] > 0.5);
+        setPrediction(body[0] > body[1] ? PREDICTION.BLACK : PREDICTION.WHITE) 
+        const percent = body[0] > body[1] ? body[0] : body[1];
+        setPercent((percent * 100).toFixed())
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setPrediction(PREDICTION.NONE);
+      });
   }
 
   const train = (type) => {
-    console.log(data);
     setTraining(true);
     fetch('http://localhost:3001/train', {
       method: 'post',
@@ -54,32 +66,66 @@ function Field() {
         setOpenSnackbar(true);
       })
       .catch((err) => {
-        console.log(err); 
+        console.log(err);
         setTraining(false);
       });
   }
 
+  const next = () => {
+    setColorBack(getRandomColor);
+    setPercent(0);
+    setPrediction(PREDICTION.NONE);
+  } 
+
   return (
     <>
-      <h1>Choose color</h1>
+      <h1>Color Prediction</h1>
       <div className='container'>
-        <Box textColor="black" colorBack={colorBack} clicked={refreshAndSave} />
-        <Box textColor="white" colorBack={colorBack} clicked={refreshAndSave} />
+        <Box 
+          textColor="black" 
+          colorBack={colorBack} 
+          clicked={refreshAndSave}
+          predicted={prediction === 'black'}
+          percent={percent}
+        />
+        <Box 
+          textColor="white" 
+          colorBack={colorBack} 
+          clicked={refreshAndSave} 
+          predicted={prediction === 'white'}
+          percent={percent}
+        />
       </div>
 
-      <Button variant="text" size="large" onClick={predict}>
-        Predict
-      </Button>
+      <div className='button-container'>
+        <Button 
+          variant="outlined" 
+          onClick={predict} 
+          startIcon={<TrackChangesIcon />} 
+          disabled={prediction != PREDICTION.NONE}
+        >
+          Predict
+        </Button>
+        <Button 
+          variant="outlined" 
+          onClick={next} 
+          endIcon={<ArrowForwardIosIcon />}
+        >
+          Next
+        </Button>
+      </div>
 
       <LoadingButton
         onClick={() => train('generated')}
-        endIcon={<BlurOnIcon />}
+        startIcon={<AutorenewIcon />}
         loading={training}
-        loadingPosition="end"
+        loadingPosition="start"
         variant="outlined"
       >
-        Train
+        Train model
       </LoadingButton>
+
+      
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
         <Alert severity="success" sx={{ width: '100%' }}>
