@@ -32,7 +32,7 @@ npm i
 npm start
 ```
 
-To start backend - open `frontend` folder and run: 
+To start backend - open `backend` folder and run: 
 ```
 npm i
 npm start
